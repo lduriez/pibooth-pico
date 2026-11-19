@@ -33,16 +33,54 @@ ASCII lines terminated by `\n`:
 
 ## 1. Wiring
 
-| Function      | GPIO | Physical pin | Connection                                  |
-|---------------|------|--------------|---------------------------------------------|
-| Capture button| GP14 | 19           | button between GP14 and GND (e.g. pin 18)   |
-| Print button  | GP15 | 20           | button between GP15 and GND (e.g. pin 23)   |
-| Capture LED   | GP16 | 21           | GP16 → 220-330 Ω resistor → LED → GND       |
-| Print LED     | GP17 | 22           | GP17 → resistor → LED → GND                 |
+```mermaid
+flowchart LR
+    subgraph PICO["Raspberry Pi Pico H"]
+        direction TB
+        GP14["GP14 · pin 19"]
+        GP15["GP15 · pin 20"]
+        GP16["GP16 · pin 21"]
+        GP17["GP17 · pin 22"]
+        GND["GND · pin 18 or 23"]
+    end
+
+    GP14 --- BTNC(["Capture button"])
+    GP15 --- BTNP(["Print button"])
+    GP16 --- RC["Resistor"] --- LEDC["Capture LED<br/>long leg (+) → short leg (−)"]
+    GP17 --- RP["Resistor"] --- LEDP["Print LED<br/>long leg (+) → short leg (−)"]
+
+    BTNC --- RAIL[["GND rail"]]
+    BTNP --- RAIL
+    LEDC --- RAIL
+    LEDP --- RAIL
+    GND --- RAIL
+```
+
+| Function      | GPIO | Physical pin | Connection                          |
+|---------------|------|--------------|-------------------------------------|
+| Capture button| GP14 | 19           | GP14 → button → GND                 |
+| Print button  | GP15 | 20           | GP15 → button → GND                 |
+| Capture LED   | GP16 | 21           | GP16 → resistor → LED → GND         |
+| Print LED     | GP17 | 22           | GP17 → resistor → LED → GND         |
 
 Internal pull-ups are enabled, so the buttons need no external resistor.
-The Pico outputs 3.3 V like the Raspberry Pi GPIO, so LEDs that worked there work here.
 Pin numbers are configurable at the top of `pico/main.py`.
+
+### Choosing the LED resistor
+
+The Pico outputs 3.3 V. The resistor limits the current according to the
+LED's forward voltage, which depends on its colour:
+
+| LED colour               | Forward voltage | Resistor | Current  |
+|--------------------------|-----------------|----------|----------|
+| Red, yellow, green       | ~2 V            | 220 Ω    | ~6 mA    |
+| Blue, white, pure green  | ~3 V            | 100 Ω    | ~3 mA    |
+
+With 100 Ω, a red LED would draw about 13 mA, which is more than the 4 mA a
+Pico pin is rated for by default. It usually still works, but 220 Ω is safer
+and the LED stays bright. Arcade buttons with a built-in LED often already
+include a resistor: check their datasheet. LEDs rated for 5 V or 12 V will be
+dim or stay off at 3.3 V.
 
 Common pitfalls:
 
