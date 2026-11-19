@@ -23,7 +23,7 @@ import pibooth
 import serial
 from pibooth.utils import LOGGER
 
-__version__ = "1.0.0"
+__version__ = "0.1.0"
 
 SECTION = "PICO"
 LED_POLL_S = 0.02
