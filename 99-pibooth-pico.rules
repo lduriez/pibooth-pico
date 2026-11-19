@@ -1,0 +1,3 @@
+# Raspberry Pi Pico running MicroPython (VID 2e8a / PID 0005) -> /dev/pibooth-pico
+# ID_MM_DEVICE_IGNORE: prevents ModemManager from probing the port when plugged in
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0005", SYMLINK+="pibooth-pico", MODE="0660", GROUP="dialout", ENV{ID_MM_DEVICE_IGNORE}="1"
