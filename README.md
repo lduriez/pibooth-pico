@@ -125,22 +125,46 @@ Quit with `Ctrl-X`. On macOS there is no udev: use `/dev/cu.usbmodemXXXX` instea
 Only one program can use the serial port at a time: close miniterm before starting
 pibooth or using `mpremote`.
 
-## 4. pibooth
+## 4. pibooth plugin
+
+Install the plugin with pip, in the same environment as pibooth. pibooth and
+pyserial are installed as dependencies:
 
 ```bash
 python3 -m venv ~/pibooth-venv
-~/pibooth-venv/bin/pip install pibooth pyserial
+~/pibooth-venv/bin/pip install git+https://github.com/lduriez/pibooth-pico
 ```
 
-In `~/.config/pibooth/pibooth.cfg`:
+pibooth enables pip-installed plugins automatically: there is no need to list it
+in the `plugins` option. At startup, the plugin is listed among the installed
+plugins in the pibooth logs, followed by a "Pico connected on ..." message.
+
+The serial port defaults to `/dev/pibooth-pico`. To change it, edit
+`~/.config/pibooth/pibooth.cfg`:
 
 ```ini
-[GENERAL]
-plugins = /home/<user>/pibooth_pico.py
-
 [PICO]
 port = /dev/pibooth-pico
 ```
+
+To disable the plugin without uninstalling it:
+
+```ini
+[GENERAL]
+plugins_disabled = pibooth_pico
+```
+
+### Development install
+
+To work on the plugin, either install it in editable mode from a clone
+(`pip install -e .`), or skip pip and point pibooth to the file directly:
+
+```ini
+[GENERAL]
+plugins = /path/to/pibooth-pico/pibooth_pico.py
+```
+
+Do not do both at once: the plugin would be registered twice.
 
 The `[CONTROLS]` options (`debounce_delay`, pin numbers) still apply. Pin numbers
 are now only used for the simulated pins, so there is no need to change them.

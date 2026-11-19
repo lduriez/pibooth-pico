@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pibooth-pico"
+dynamic = ["version"]
+description = "Physical buttons and LEDs for pibooth on any PC, using a Raspberry Pi Pico (MicroPython) over USB."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Luc Duriez" }]
+requires-python = ">=3.8"
+dependencies = [
+    "pibooth>=2.0.0",
+    "pyserial>=3.4",
+]
+keywords = ["pibooth", "photobooth", "raspberry-pi-pico", "micropython", "plugin"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Multimedia :: Graphics :: Capture",
+]
+
+[project.urls]
+Homepage = "https://github.com/lduriez/pibooth-pico"
+
+# pibooth automatically enables any installed module registered in this group
+[project.entry-points.pibooth]
+pibooth_pico = "pibooth_pico"
+
+[tool.setuptools]
+py-modules = ["pibooth_pico"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pibooth_pico.__version__" }
